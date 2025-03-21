@@ -199,57 +199,5 @@
     <footer>
         <p>&copy; 2023 My Website</p>
     </footer>
-    <script>
-        let points = [];
-
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 200; i++) {
-                points.push(new Point(random(width), random(height)));
-            }
-        }
-
-        function draw() {
-            background(0);
-            for (let point of points) {
-                point.update();
-                point.display();
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-
-        class Point {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = random(-1, 1);
-                this.vy = random(-1, 1);
-            }
-
-            update() {
-                let d = dist(mouseX, mouseY, this.x, this.y);
-                if (d < 100) {
-                    let angle = atan2(this.y - mouseY, this.x - mouseX);
-                    this.vx += cos(angle);
-                    this.vy += sin(angle);
-                }
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vx *= 0.95;
-                this.vy *= 0.95;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-
-            display() {
-                noStroke();
-                fill(255);
-                ellipse(this.x, this.y, 5, 5);
-            }
-        }
-    </script>
 </body>
+</html>
