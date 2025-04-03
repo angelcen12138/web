@@ -3,201 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: red;
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-        }
-        nav {
-            margin: 0;
-            padding: 0;
-            background-color: #444;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        nav ul li {
-            margin: 0;
-        }
-        nav ul li a {
-            color: #fff;
-            padding: 1rem;
-            display: block;
-            text-decoration: none;
-        }
-        nav ul li a:hover {
-            background-color: #555;
-        }
-        main {
-            padding: 2rem;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <title>Interactive Eyes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script>
-        let nodes = [];
-        let follower;
-        let points = [];
-
         function setup() {
-            createCanvas(windowWidth, windowHeight);
-            for (let i = 0; i < 100; i++) {
-                nodes.push(new Node(random(width), random(height)));
-            }
-            follower = new Follower(mouseX, mouseY);
-            for (let i = 0; i < 200; i++) {
-                points.push(new Point(random(width), random(height)));
-            }
+            createCanvas(400, 400);
+            colorMode(HSB);
+
+            // Set angle mode so that atan2() returns angles in degrees
+            angleMode(DEGREES);
+
+            describe('Two eyes that follow the cursor.');
         }
 
         function draw() {
             background(0);
-            for (let node of nodes) {
-                node.update();
-                node.display();
-            }
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    let d = dist(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
-                    if (d < 100) {
-                        stroke(255, 255, 255, 255 - d * 2.5);
-                        line(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
-                    }
-                }
-            }
-            follower.update();
-            follower.display();
-            for (let point of points) {
-                point.update();
-                point.display();
-            }
-        }
 
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
+            // Draw left eye
+            let leftX = 150;
+            let leftY = 200;
 
-        class Node {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = random(-1, 1);
-                this.vy = random(-1, 1);
-            }
+            // Calculate angle between left eye and mouse
+            let leftAngle = atan2(mouseY - leftY, mouseX - leftX);
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
+            push();
+            translate(leftX, leftY);
+            fill(255);
+            ellipse(0, 0, 50, 50);
+            rotate(leftAngle);
+            fill(0);
+            ellipse(12.5, 0, 25, 25);
+            pop();
 
-            display() {
-                noStroke();
-                fill(255);
-                ellipse(this.x, this.y, 10, 10);
-            }
-        }
+            // Draw right eye
+            let rightX = 250;
+            let rightY = 200;
 
-        class Follower {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-            }
+            // Calculate angle between right eye and mouse
+            let rightAngle = atan2(mouseY - rightY, mouseX - rightX);
 
-            update() {
-                this.x = lerp(this.x, mouseX, 0.05);
-                this.y = lerp(this.y, mouseY, 0.05);
-            }
-
-            display() {
-                noStroke();
-                fill(255, 0, 0);
-                ellipse(this.x, this.y, 15, 15);
-            }
-        }
-
-        class Point {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = random(-1, 1);
-                this.vy = random(-1, 1);
-            }
-
-            update() {
-                let d = dist(mouseX, mouseY, this.x, this.y);
-                if (d < 100) {
-                    let angle = atan2(this.y - mouseY, this.x - mouseX);
-                    this.vx += cos(angle);
-                    this.vy += sin(angle);
-                }
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vx *= 0.95;
-                this.vy *= 0.95;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-
-            display() {
-                noStroke();
-                fill(255);
-                ellipse(this.x, this.y, 5, 5);
-            }
+            push();
+            translate(rightX, rightY);
+            fill(255);
+            ellipse(0, 0, 50, 50);
+            rotate(rightAngle);
+            fill(0);
+            ellipse(12.5, 0, 25, 25);
+            pop();
         }
     </script>
-    <main>
-        <h2>About Us</h2>
-        <p>This is a simple website template created with HTML and CSS.</p>
-        <h2>Design Thinking</h2>
-        <p>Design thinking is a non-linear, iterative process that teams use to understand users, challenge assumptions, redefine problems and create innovative solutions to prototype and test. It involves five phases: Empathize, Define, Ideate, Prototype, and Test.</p>
-        <h3>Phases of Design Thinking</h3>
-        <ul>
-            <li><strong>Empathize:</strong> Understand the needs of those you're designing for.</li>
-            <li><strong>Define:</strong> Reframe and define the problem in human-centric ways.</li>
-            <li><strong>Ideate:</strong> Brainstorm and come up with creative solutions.</li>
-            <li><strong>Prototype:</strong> Build real, tactile representations for a range of your ideas.</li>
-            <li><strong>Test:</strong> Return to your users for feedback.</li>
-        </ul>
-    </main>
-    <footer>
-        <p>&copy; 2023 My Website</p>
-    </footer>
 </body>
-</html>
+<script>
+    let blink = false;
+    let bgHue = 0;
+
+    function setup() {
+        createCanvas(400, 400);
+        colorMode(HSB);
+        angleMode(DEGREES);
+
+        // Move the canvas to the right
+        let canvas = createCanvas(400, 400);
+        canvas.position(100, 200); // Adjust position (100px to the right, 0px from the top)
+
+     
+
+     
+
+        setInterval(() => {
+            blink = true;
+            setTimeout(() => {
+            blink = false;
+            setTimeout(() => {
+                blink = true;
+                setTimeout(() => {
+                blink = false;
+                }, 50); // Duration of the second blink
+            }, 200); // Delay between the two blinks
+            }, 50); // Duration of the first blink
+        }, 5000); // Every 5 seconds, two blinks occur
+    }
+
+    function draw() {
+        bgHue = (bgHue + 0.5) % 360; // Slowly change background hue
+        background(bgHue, 50, 100);
+
+        drawEye(150, 200); // Left eye
+        drawEye(150, 100);
+        drawEye(150, 150);
+        drawEye(250, 200); // Right eye
+        drawEye(250, 100);
+        drawEye(250, 150)
+
+        // Draw left eye
+        let leftX = 150;
+            let leftY = 200;
+
+            // Calculate angle between left eye and mouse
+            let leftAngle = atan2(mouseY - leftY, mouseX - leftX);
+    }
+
+    function drawEye(x, y) {
+        let angle = atan2(mouseY - y, mouseX - x);
+
+        push();
+        translate(x, y);
+        fill(60, 100, 100);
+        ellipse(0, 0, 50, blink ? 10 : 50); // Blink effect
+        if (!blink) {
+            rotate(angle);
+            fill(0);
+            ellipse(12.5, 0, 30, 10);
+        }
+        pop();
+        // Draw mouth
+        push();
+        translate(200, 300); // Position of the mouth
+        fill(5, 166, 150);
+        arc(0, 0, 250, 150, 360, 180); // Neutral mouth
+        pop();
+        
+    }
+</script>
